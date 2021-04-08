@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shorty.Models;
+using Shorty.Services;
+using Shorty.Services.Impl;
 
 namespace Shorty
 {
@@ -42,6 +44,8 @@ namespace Shorty
                 else
                     options.UseSqlServer(connectionString);
             });
+
+            services.AddScoped<ILinksService, EntityLinksService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

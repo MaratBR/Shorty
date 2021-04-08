@@ -13,9 +13,5 @@ namespace Shorty.Services
         Task<Link> GetLinkById(string id);
 
         Task<Link> GetLinkByUrl(string url);
-
-        string NormalizeURL(string url);
-
-        Task<string> GenerateLinkId();
     }
 }

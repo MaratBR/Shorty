@@ -7,6 +7,6 @@ namespace Shorty.Services.Impl
 {
     public class LinkNotFoundException : LinkServiceException
     {
-        public LinkNotFoundException(string id){}
+        public LinkNotFoundException(string description) : base($"link not found - {description}") {}
     }
 }

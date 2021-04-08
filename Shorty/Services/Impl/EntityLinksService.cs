@@ -11,14 +11,14 @@ namespace Shorty.Services.Impl
 {
     public class EntityLinksService : ILinksService
     {
-        private AppDbContext dbContext;
+        private readonly AppDbContext _dbContext;
 
         public EntityLinksService(AppDbContext context)
         {
-            dbContext = context;
+            _dbContext = context;
         }
 
-        public async Task<string> GenerateLinkId()
+        private async Task<string> GenerateLinkId()
         {
             string id;
             int length = 4;
@@ -35,29 +35,34 @@ namespace Shorty.Services.Impl
 
                attempt++;
             }
-            while (await dbContext.Links.AnyAsync(link => link.Id == id));
+            while (await _dbContext.Links.AnyAsync(link => link.Id == id));
 
             return id;
         }
 
-        public Task<Link> GetLinkById(string id)
+        public async Task<Link> GetLinkById(string id)
         {
-            var link = dbContext.Links.FirstOrDefaultAsync(link => link.Id == id);
+            var link = await _dbContext.Links.FirstOrDefaultAsync(link => link.Id == id);
             if (link == null)
-                throw new 
+                throw new LinkNotFoundException(id);
+            return link;
         }
 
-        public Task<Link> GetLinkByUrl(string url)
+        public async Task<Link> GetLinkByUrl(string url)
         {
-            
+            var hash = GetHash(NormalizeUrl(url));
+            var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
+            if (link == null)
+                throw new LinkNotFoundException($"url={url} (hash={hash})");
+            return link;
         }
 
         public async Task<Link> GetOrCreateLink(string url)
         {
-            string normalizedUrl = NormalizeURL(url);
+            string normalizedUrl = NormalizeUrl(url);
             string hash = GetHash(normalizedUrl);
 
-            var link = await dbContext.Links.FirstOrDefaultAsync(link => link.UrlHash == hash);
+            var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
             if (link != null)
                 return link;
 
@@ -70,24 +75,24 @@ namespace Shorty.Services.Impl
                 Url = normalizedUrl,
                 UrlHash = hash
             };
-            dbContext.Add(link);
-            await dbContext.SaveChangesAsync();
+            _dbContext.Add(link);
+            await _dbContext.SaveChangesAsync();
             return link;
         }
 
 
-        private const string CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        private static readonly Random random = new Random();
+        private const string Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private static readonly Random RandomInstance = new Random();
 
         private static string GenerateId(int length)
         {
             char[] chars = new char[length];
             for (int i = 0; i < length; i++)
-                chars[i] = CHARS[random.Next(CHARS.Length)];
+                chars[i] = Chars[RandomInstance.Next(Chars.Length)];
             return new string(chars);
         }
 
-        private static string _NormalizeURL(string url)
+        private static string NormalizeUrl(string url)
         {
             Uri uri = new Uri(url);
 
@@ -102,11 +107,6 @@ namespace Shorty.Services.Impl
             var bytes = Encoding.UTF8.GetBytes(s);
             var hashBytes = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hashBytes);
-        }
-
-        public string NormalizeURL(string url)
-        {
-            return _NormalizeURL(url);
         }
     }
 }
