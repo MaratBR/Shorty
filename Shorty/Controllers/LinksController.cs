@@ -48,7 +48,9 @@ namespace Shorty.Controllers
             try
             {
                 var link = await _linksService.GetLinkById(linkId);
-                return Redirect(link.Url);
+                var uri = new Uri(link.Url);
+                var port = uri.Port == 80 || uri.Port == 443 ? "" : $":{uri.Port}";
+                return Redirect($"{uri.Scheme}://{uri.IdnHost}{port}{uri.PathAndQuery}{uri.Fragment}");
             }
             catch (LinkNotFoundException exception)
             {
