@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Shorty.Models;
 using Shorty.Services;
 using Shorty.Services.Impl;
+using Shorty.Services.Impl.LinkIdGeneratorService;
 
 namespace Shorty
 {
@@ -45,7 +46,13 @@ namespace Shorty
                     options.UseSqlServer(connectionString);
             });
 
+            services.AddSingleton(
+                Configuration.GetSection("SharedConfiguration").Get<SharedConfiguration>()
+                );
+
             services.AddScoped<ILinksService, EntityLinksService>();
+            services.AddScoped<ILinkIdGeneratorService, RngIdGeneratorService>();
+            // services.AddScoped<ILinkIdGeneratorService, HashIdGeneratorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,23 @@
+﻿@import "../index";
+
+.url-input {
+    font-size: 1.3em;
+    text-align: center;
+    background: $scheme-main-ter;
+    padding: 15px;
+    border: 2px solid transparent;
+    transition: .2s;
+    
+    width: 100vw;
+    margin: 20px 0;
+    
+    &:focus {
+        outline: none;
+        border-color: $primary;
+    }
+}
+
+.home {
+    height: 100vh;
+    justify-content: center;
+}

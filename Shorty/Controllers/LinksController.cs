@@ -24,7 +24,7 @@ namespace Shorty.Controllers
         
         public class ShortenedLink
         {
-            public string LinkID { get; set; }
+            public string LinkId { get; set; }
         }
 
         public class ShortenLinkRequest
@@ -39,7 +39,7 @@ namespace Shorty.Controllers
             [FromServices] ILinksService linksService)
         {
             Link link = await linksService.GetOrCreateLink(request.Link);
-            return new ShortenedLink { LinkID = link.Id };
+            return new ShortenedLink { LinkId = link.Id };
         }
 
         [HttpGet("/{linkId}")]

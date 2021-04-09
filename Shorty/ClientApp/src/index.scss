@@ -1,0 +1,20 @@
+/* Provide sufficient contrast against white background */
+
+$primary: #ffb10c;
+$link: $primary;
+$border-hover: $primary;
+$border-light-hover: lighten($primary, 10%);
+
+@import "~bulma";
+
+.app-title {
+  font-family: 'Alfa Slab One', cursive;
+  user-select: none;
+  font-size: 3rem;
+}
+
+code {
+  color: #E01A76;
+}
+
+
