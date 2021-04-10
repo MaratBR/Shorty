@@ -1,24 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Shorty.Utils;
 
-namespace Shorty.Services.Impl
+namespace Shorty.Services.Impl.LinksService
 {
     public class EntityLinksService : ILinksService
     {
         private readonly AppDbContext _dbContext;
         private readonly ILinkIdGeneratorService _generatorService;
+        private readonly ILinksNormalizationService _normalization;
 
-        public EntityLinksService(AppDbContext context, ILinkIdGeneratorService generatorService)
+        public EntityLinksService
+            (AppDbContext context, 
+            ILinkIdGeneratorService generatorService,
+            ILinksNormalizationService normalization)
         {
             _dbContext = context;
             _generatorService = generatorService;
+            _normalization = normalization;
         }
 
         public async Task<Link> GetLinkById(string id)
@@ -31,16 +33,17 @@ namespace Shorty.Services.Impl
 
         public async Task<Link> GetLinkByUrl(string url)
         {
-            var hash = GetHash(NormalizeUrl(url));
+            var uri = _normalization.NormalizeLink(url);
+            var hash = GetHash(_normalization.ConvertToString(uri));
             var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
             if (link == null)
                 throw new LinkNotFoundException($"url={url} (hash={hash})");
             return link;
         }
 
-        public async Task<Link> GetOrCreateLink(string url)
+        public async Task<Link> GetOrCreateLink(Uri uri)
         {
-            string normalizedUrl = NormalizeUrl(url);
+            string normalizedUrl = _normalization.ConvertToString(uri);
             string hash = GetHash(normalizedUrl);
 
             var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
@@ -51,7 +54,6 @@ namespace Shorty.Services.Impl
             {
                 Id = _generatorService.GenerateId(normalizedUrl),
                 CreatedAt = DateTime.UtcNow,
-                Hits = 0,
                 Url = normalizedUrl,
                 UrlHash = hash
             };
@@ -62,16 +64,6 @@ namespace Shorty.Services.Impl
 
        
         #region static
-        
-        private static string NormalizeUrl(string url)
-        {
-            var builder = new UriBuilder(url);
-            
-            if (builder.Scheme != "https" && builder.Scheme != "http")
-                throw new InvalidUrlException($"unexpected schema - {builder.Scheme}, only http/https is supported");
-
-            return builder.ToString();
-        }
 
         private static string GetHash(string s)
         {

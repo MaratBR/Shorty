@@ -1,6 +1,11 @@
 ﻿@import "../index";
 
 .url-input {
+    &:focus::placeholder {
+        opacity: 0;
+    }
+    
+    border-radius: 10px;
     font-size: 1.3em;
     text-align: center;
     background: $scheme-main-ter;
@@ -9,6 +14,12 @@
     transition: .2s;
     
     width: 100vw;
+    
+    
+    @media screen and (min-width: 500px) {
+        width: 95vw;
+    }
+    
     margin: 20px 0;
     
     &:focus {
@@ -20,4 +31,24 @@
 .home {
     height: 100vh;
     justify-content: center;
+}
+
+.errors {
+    color: #300;
+    background: #ffe0e0e0;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #992222;
+    border-radius: 10px;
+}
+
+.error {
+    &__body {
+        
+    }
+    
+    &__field {
+        font-weight: bold;
+        margin-right: 5px;
+    }
 }

@@ -8,7 +8,7 @@ namespace Shorty.Services
 {
     public interface ILinksService
     {
-        Task<Link> GetOrCreateLink(string fullUrl);
+        Task<Link> GetOrCreateLink(Uri uri);
 
         Task<Link> GetLinkById(string id);
 

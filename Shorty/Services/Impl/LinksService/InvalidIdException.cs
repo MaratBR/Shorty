@@ -1,4 +1,4 @@
-﻿namespace Shorty.Services.Impl
+﻿namespace Shorty.Services.Impl.LinksService
 {
     public class InvalidIdException : LinkServiceException
     {

@@ -9,6 +9,8 @@ using Shorty.Models;
 using Shorty.Services;
 using Shorty.Services.Impl;
 using Shorty.Services.Impl.LinkIdGeneratorService;
+using Shorty.Services.Impl.LinksNormalizationService;
+using Shorty.Services.Impl.LinksService;
 
 namespace Shorty
 {
@@ -51,8 +53,11 @@ namespace Shorty
                 );
 
             services.AddScoped<ILinksService, EntityLinksService>();
-            services.AddScoped<ILinkIdGeneratorService, RngIdGeneratorService>();
-            // services.AddScoped<ILinkIdGeneratorService, HashIdGeneratorService>();
+            //services.AddScoped<ILinkIdGeneratorService, RngIdGeneratorService>();
+            services.AddScoped<ILinkIdGeneratorService, HashIdGeneratorService>();
+            
+            // нормализация url
+            services.AddSingleton<ILinksNormalizationService>(new UriBuilderNormalizationService());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

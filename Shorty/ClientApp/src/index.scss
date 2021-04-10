@@ -17,4 +17,14 @@ code {
   color: #E01A76;
 }
 
+html {
+  overflow-y: hidden;
+}
+
+button.is-primary {
+  transition: box-shadow .2s;
+  &:hover {
+    box-shadow: 0 0 0 1px white, 0 0 0 3px #ffb10c;
+  }
+}
 

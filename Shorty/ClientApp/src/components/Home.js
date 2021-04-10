@@ -1,30 +1,41 @@
 import React, { Component } from 'react';
-import {getShortenedLink} from "../api";
+import {ApiError, getShortenedLink} from "../api";
 import "./Home.scss";
+
+const PLACEHOLDERS = [
+    'yandex.ru',
+    'google.com',
+    'youtube.com',
+    'facebook.com',
+    'youtube.com/watch?v=dQw4w9WgXcQ'
+];
 
 export class Home extends Component {
   static displayName = Home.name;
   state = {
-      link: '', 
-      sending: false,
-      shortenedLink: null,
-      error: null
+      link: '',
+      loading: false,
+      errors: null
   }
     
   async generate () {
-    if (this.state.sending)
+    if (this.state.loading)
         return;
     try {
-        this.setState({error: null})
         const linkId = await getShortenedLink(this.state.link);
         this.setState({
-            shortenedLink: location.origin + '/' + linkId,
-            sending: false
+            link: location.origin + '/' + linkId,
+            loading: false,
+            error: null
         })
     } catch (e) {
+        let error = e.toString();
+        if (e instanceof ApiError) {
+            error = e.errors;
+        }
         this.setState({
-            sending: false,
-            error: e.toString()
+            loading: false,
+            error
         })
     }
   }
@@ -33,13 +44,42 @@ export class Home extends Component {
     return (
       <div className="is-flex is-flex-direction-column is-align-items-center home">
           <h1 className="app-title">Shorty</h1>
-          <input className="url-input"
-              onChange={e => this.setState({link: e.target.value})} 
-              type="text"/>
-          <button className="button is-primary" onClick={() => this.generate()}>Shortify</button>
-          {this.state.shortenedLink ?
-              <a href={this.state.shortenedLink} target="_blank">{this.state.shortenedLink}</a> : undefined}
+          <div>
+              <input
+                  disabled={this.state.loading}
+                  onFocus={e => e.target.select()}
+                  value={this.state.link}
+                  placeholder={PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)]}
+                  className="url-input"
+                  onChange={e => this.setState({link: e.target.value})}
+                  type="text"/>
+          </div>
+          {this.state.error ? this.renderErrors(this.state.error) : undefined}
+          <button
+              disabled={this.state.link.trim() === ''}
+              className={"button is-primary" + (this.state.loading ? ' is-loading ' : '')}
+              onClick={() => this.generate()}>Shortify</button>
+          
       </div>
     );
+  }
+
+  renderErrors(errors) {
+      const items = [];
+      
+      let index = 0;
+      for (let field in errors) {
+          for (let err of errors[field]) {
+              items.push(
+                  <div className="error" key={index}>
+                      <span className="error__field">{field}</span>
+                      <span className="error__body">{err}</span>
+                  </div>
+              );
+              index++;
+          }
+      }
+      
+      return <div className="errors">{items}</div>
   }
 }
