@@ -35,11 +35,18 @@
 
 .errors {
     color: #300;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: #ffe0e0e0;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #992222;
-    border-radius: 10px;
+    animation: slide-in-from-bottom .3s;
+    
+    @keyframes slide-in-from-bottom {
+        0% {transform: translateY(100%)}
+        100% {transform: translateY(0%)}
+    }
 }
 
 .error {

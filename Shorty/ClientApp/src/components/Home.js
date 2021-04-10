@@ -22,7 +22,9 @@ export class Home extends Component {
     if (this.state.loading)
         return;
     try {
-        const linkId = await getShortenedLink(this.state.link);
+        const link = this.state.link.trim();
+        this.setState({link})
+        const linkId = await getShortenedLink(link);
         this.setState({
             link: location.origin + '/' + linkId,
             loading: false,
