@@ -1,8 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Base62;
-using Shorty.Models;
-using Shorty.Utils;
 
 namespace Shorty.Services.Impl.LinkIdGeneratorService
 {
