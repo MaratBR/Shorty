@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shorty.Config;
 using Shorty.Models;
 using Shorty.Services;
 using Shorty.Services.Impl;
@@ -20,17 +22,22 @@ namespace Shorty
         {
             Configuration = configuration;
             Env = env;
+            DbSettings = configuration.GetSection("DBSettings").Get<DBSettings>();
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-        public IWebHostEnvironment Env { get; }
+        private IWebHostEnvironment Env { get; }
+        
+        public DBSettings DbSettings { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+            services
+                .AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -42,10 +49,14 @@ namespace Shorty
             services.AddDbContext<AppDbContext>(options =>
             {
                 var connectionString = Configuration.GetConnectionString("Default");
-                if (Env.IsDevelopment())
+                if (DbSettings.Type == DBSettings.DBType.Sqlite)
                     options.UseSqlite(connectionString);
-                else
+                else if (DbSettings.Type == DBSettings.DBType.Mssql)
                     options.UseSqlServer(connectionString);
+                else if (DbSettings.Type == DBSettings.DBType.InMemory)
+                    options.UseInMemoryDatabase("Shorty");
+                else
+                    throw new NotImplementedException();
             });
 
             services.AddSingleton(

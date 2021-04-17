@@ -39,8 +39,7 @@ namespace Shorty.Controllers
 
         [HttpPost("shorten")]
         public async Task<ActionResult<ShortenedLink>> ShortenLink(
-            [FromBody] ShortenLinkRequest request,
-            [FromServices] ILinksService linksService)
+            [FromBody] ShortenLinkRequest request)
         {
             Link link;
 
@@ -54,7 +53,7 @@ namespace Shorty.Controllers
                     return BadRequest(modelState);
                 }
 
-                link = await linksService.GetOrCreateLink(uri);
+                link = await _linksService.GetOrCreateLink(uri);
             }
             catch (InvalidUrlException e)
             {
