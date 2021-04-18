@@ -77,11 +77,44 @@ namespace Shorty.Controllers
             try
             {
                 var link = await _linksService.GetLinkById(linkId);
+                await _linksService.IncrementLink(link);
                 return Redirect(link.Url);
             }
             catch (LinkNotFoundException exception)
             {
                 return NotFound();
+            }
+        }
+
+        public class LinkInfo
+        {
+            public string Id { get; set; }
+
+            public string Addr { get; set; }
+            
+            public long Hits { get; set; }
+            
+            public long Ts { get; set; }
+        }
+
+        [HttpGet("/link-info/{linkId}")]
+        public async Task<ActionResult<LinkInfo>> GetInfo(string linkId)
+        {
+            try
+            {
+                var link = await _linksService.GetLinkById(linkId);
+
+                return new LinkInfo
+                {
+                    Hits = link.Hits,
+                    Addr = link.Url,
+                    Id = link.Id,
+                    Ts = ((DateTimeOffset)link.CreatedAt).ToUnixTimeSeconds()
+                };
+            }
+            catch (LinkNotFoundException e)
+            {
+                return NotFound($"Link {linkId} not found");
             }
         }
     }

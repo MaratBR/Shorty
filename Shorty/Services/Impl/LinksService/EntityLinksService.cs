@@ -13,14 +13,19 @@ namespace Shorty.Services.Impl.LinksService
         private readonly ILinkIdGeneratorService _generatorService;
         private readonly ILinksNormalizationService _normalization;
 
+        private readonly bool _ensureSingleRecord;
+
         public EntityLinksService
             (AppDbContext context, 
             ILinkIdGeneratorService generatorService,
-            ILinksNormalizationService normalization)
+            ILinksNormalizationService normalization,
+            bool ensureSingleRecord = true)
         {
             _dbContext = context;
             _generatorService = generatorService;
             _normalization = normalization;
+
+            _ensureSingleRecord = ensureSingleRecord;
         }
 
         public async Task<Link> GetLinkById(string id)
@@ -41,14 +46,26 @@ namespace Shorty.Services.Impl.LinksService
             return link;
         }
 
+        public async Task<Link> IncrementLink(Link link)
+        {
+            link.Hits++;
+            await _dbContext.SaveChangesAsync();
+            return link;
+        }
+
         public async Task<Link> GetOrCreateLink(Uri uri)
         {
             string normalizedUrl = _normalization.ConvertToString(uri);
             string hash = GetHash(normalizedUrl);
 
-            var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
-            if (link != null)
-                return link;
+            Link link;
+
+            if (_ensureSingleRecord)
+            {
+                link = await _dbContext.Links.FirstOrDefaultAsync(l => l.UrlHash == hash);
+                if (link != null)
+                    return link;
+            }
 
             link = new Link
             {

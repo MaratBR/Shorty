@@ -18,5 +18,7 @@ namespace Shorty.Models
         public string Url { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public long Hits { get; set; } = 0;
     }
 }

@@ -13,5 +13,7 @@ namespace Shorty.Services
         Task<Link> GetLinkById(string id);
 
         Task<Link> GetLinkByUrl(string url);
+
+        Task<Link> IncrementLink(Link link);
     }
 }

@@ -21,7 +21,7 @@ namespace Shorty.Services.Impl.LinkIdGeneratorService
         {
             var bytes = Encoding.UTF8.GetBytes(_key + normalizedUrl);
             Sha256.ComputeHash(bytes);
-            var hashString = Sha256.Hash.ToBase62();
+            var hashString = Sha256.Hash!.ToBase62();
             return hashString.Length > _preferredLength ? hashString.Substring(0, _preferredLength) : hashString;
         }
     }

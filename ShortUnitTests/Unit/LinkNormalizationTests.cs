@@ -34,7 +34,7 @@ namespace ShortUnitTests.Unit
             }
         }
         
-        private static readonly Dictionary<string, string> ValidUrls = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ValidUrls = new()
         {
             {"yandex.ru", "http://yandex.ru/"},
             {"http://yandex.ru", "http://yandex.ru/"},
@@ -46,7 +46,7 @@ namespace ShortUnitTests.Unit
             {"http://domain.com:443", "http://domain.com:443/"},
         };
         
-        private static readonly Dictionary<string, string> IdnUrls = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> IdnUrls = new()
         {
             // idn
             {"http://россия.рф/", "http://xn--h1alffa9f.xn--p1ai/"},
