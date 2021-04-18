@@ -1,30 +1,54 @@
 ﻿@import "../index";
 
-.url-input {
-    &:focus::placeholder {
-        opacity: 0;
+.url-main {
+    padding: 20px 0;
+    position: relative;
+    
+    &__copy {
+        all: unset;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px;
+        border-radius: 100px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        &:hover {
+            background: rgba(black, 0.05);
+        }
     }
-    
-    border-radius: 10px;
-    font-size: 1.3em;
-    text-align: center;
-    background: $scheme-main-ter;
-    padding: 15px;
-    border: 2px solid transparent;
-    transition: .2s;
-    
-    width: 100vw;
-    
-    
-    @media screen and (min-width: 500px) {
-        width: 95vw;
-    }
-    
-    margin: 20px 0;
-    
-    &:focus {
-        outline: none;
-        border-color: $primary;
+
+    &__input {
+        &:focus::placeholder {
+            opacity: 0;
+        }
+
+        border-radius: 10px;
+        font-size: 1.3em;
+        text-align: center;
+        background: $scheme-main-ter;
+        padding: 15px;
+        border: 2px solid transparent;
+        transition: .2s;
+
+        width: 100vw;
+
+
+        @media screen and (min-width: 500px) {
+            width: 95vw;
+        }
+
+
+        &:focus {
+            outline: none;
+            border-color: $primary;
+        }
     }
 }
 

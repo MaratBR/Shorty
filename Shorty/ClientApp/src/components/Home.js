@@ -17,6 +17,10 @@ export class Home extends Component {
       loading: false,
       errors: null
   }
+    /**
+     * @type React.RefObject<HTMLInputElement>
+     */
+  inputRef = React.createRef()
     
   async generate () {
     if (this.state.loading)
@@ -46,13 +50,19 @@ export class Home extends Component {
     return (
       <div className="is-flex is-flex-direction-column is-align-items-center home">
           <h1 className="app-title">Shorty</h1>
-          <div>
+          <div className="url-main">
+              {this.state.link.trim() !== '' ? <button
+                  onClick={() => this.inputRef.current.select() || document.execCommand("copy")}
+                  className="url-main__copy">
+                  <i className="fas fa-clone"></i>
+              </button> : undefined}
               <input
+                  ref={this.inputRef}
                   disabled={this.state.loading}
                   onFocus={e => e.target.select()}
                   value={this.state.link}
                   placeholder={PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)]}
-                  className="url-input"
+                  className="url-main__input"
                   onChange={e => this.setState({link: e.target.value})}
                   type="text"/>
           </div>
