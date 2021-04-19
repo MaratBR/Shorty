@@ -38,7 +38,7 @@ namespace ShortUnitTests.ApiTests
             Assert.NotNull(response);
 
 
-            result = await Client.GetAsync(response.LinkId);
+            result = await Client.GetAsync(response.Id);
             Assert.AreEqual(HttpStatusCode.Redirect, result.StatusCode);
             Assert.AreEqual(link, result.Headers.Location?.ToString());
         }
@@ -73,7 +73,7 @@ namespace ShortUnitTests.ApiTests
             });
             Assert.NotNull(response2);
             
-            Assert.AreEqual(response.LinkId, response2.LinkId);
+            Assert.AreEqual(response.Id, response2.Id);
         }
         
         [Test]
@@ -88,16 +88,16 @@ namespace ShortUnitTests.ApiTests
             
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
 
-            LinksController.ShortenedLink response = null;
+            LinksController.LinkInfo response = null;
             Assert.DoesNotThrowAsync(async () =>
             {
-                response = JsonConvert.DeserializeObject<LinksController.ShortenedLink>(await result.Content.ReadAsStringAsync());
+                response = JsonConvert.DeserializeObject<LinksController.LinkInfo>(await result.Content.ReadAsStringAsync());
             });
             Assert.NotNull(response);
             
             // get info
             
-            result = await Client.GetAsync($"link-info/{response.LinkId}");
+            result = await Client.GetAsync($"link-info/{response.Id}");
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             LinksController.LinkInfo response2 = null;
             Assert.DoesNotThrowAsync(async () =>
@@ -106,13 +106,13 @@ namespace ShortUnitTests.ApiTests
             });
             Assert.NotNull(response2);
             
-            Assert.AreEqual(response.LinkId, response2.Id);
+            Assert.AreEqual(response.Id, response2.Id);
             Assert.AreEqual(0, response2.Hits);
 
-            await Client.GetAsync(response.LinkId);
+            await Client.GetAsync(response.Id);
             
             // get info again
-            result = await Client.GetAsync($"link-info/{response.LinkId}");
+            result = await Client.GetAsync($"link-info/{response.Id}");
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             Assert.DoesNotThrowAsync(async () =>
             {

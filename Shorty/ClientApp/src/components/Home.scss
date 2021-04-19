@@ -55,6 +55,69 @@
 .home {
     height: 100vh;
     justify-content: center;
+    
+    &__open-sidebar {
+        border: none;
+        background: none;
+        padding: 20px;
+        font-size: 2em;
+        color: #666;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 20;
+    }
+    
+    
+    &__sidebar-wrapper {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+
+        @media screen and (min-width: 500px) {
+            background: rgba(black, 0.4);
+        }
+    }
+}
+
+.sidebar {
+    padding: 90px 10px 0 15px;
+    position: absolute;
+    right: 0;
+    height: 100%;
+    min-width: 100%;
+    background: #f2f2f2;
+    box-shadow: 0 0 30px #555;
+    overflow-y: auto;
+
+    @media screen and (min-width: 500px) {
+        min-width: 45%;
+    }
+}
+
+.sidebar-item {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 11px 10px -2px #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    
+    &__shorty {
+        color: $body-color;
+        font-family: 'Alfa Slab One', cursive;
+        
+        &:hover, &:hover .origin {
+            color: $primary !important;
+        }
+        
+        .origin {
+            color: #777;
+        }
+    }
+    
+    &__link {
+        font-size: .9em;
+    }
 }
 
 .errors {

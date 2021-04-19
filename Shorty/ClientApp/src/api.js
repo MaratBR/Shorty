@@ -13,8 +13,7 @@ export async function getShortenedLink(link) {
     })
     let json = await response.json();
     if (response.status === 200) {
-        const {linkId} = json
-        return linkId
+        return json
     } else if (response.status >= 400 && response.status < 600) {
         if (json.errors)
             json = json.errors;

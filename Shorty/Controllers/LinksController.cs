@@ -28,7 +28,9 @@ namespace Shorty.Controllers
         
         public class ShortenedLink
         {
-            public string LinkId { get; set; }
+            public string Id { get; set; }
+
+            public string Addr { get; set; }
         }
 
         public class ShortenLinkRequest
@@ -68,7 +70,11 @@ namespace Shorty.Controllers
                 return BadRequest(modelState);
             }
             
-            return new ShortenedLink { LinkId = link.Id };
+            return new ShortenedLink
+            {
+                Id = link.Id,
+                Addr = link.Url
+            };
         }
 
         [HttpGet("/{linkId}")]
