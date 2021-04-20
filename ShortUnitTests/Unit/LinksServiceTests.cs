@@ -77,5 +77,17 @@ namespace ShortUnitTests.Unit
             Assert.AreEqual(link.Id, link3.Id);
             Assert.AreEqual(link.UrlHash, link3.UrlHash);
         }
+
+        [Test]
+        public async Task DeleteLink()
+        {
+            var newLink = await _linksService.GetOrCreateLink(new Uri("https://example.com/soon_to_be_deleted_link"));
+            Assert.NotNull(newLink);
+            await _linksService.DeleteLink(newLink.Id);
+            Assert.ThrowsAsync<LinkNotFoundException>(async () =>
+            {
+                await _linksService.GetLinkById(newLink.Id);
+            });
+        }
     }
 }

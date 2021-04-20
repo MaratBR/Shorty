@@ -4,6 +4,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using SQLitePCL;
 
 namespace Shorty.Services.Impl.LinksService
 {
@@ -79,6 +80,15 @@ namespace Shorty.Services.Impl.LinksService
             return link;
         }
 
+        public async Task DeleteLink(string linkId)
+        {
+            var link = await _dbContext.Links.FirstOrDefaultAsync(l => l.Id == linkId);
+            if (link != null)
+            {
+                _dbContext.Links.Remove(link);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
        
         #region static
 

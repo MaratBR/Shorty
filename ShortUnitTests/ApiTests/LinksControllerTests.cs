@@ -120,7 +120,6 @@ namespace ShortUnitTests.ApiTests
             });
             Assert.NotNull(response);
             Assert.AreEqual(1, response2.Hits);
-            
         }
     }
 }
