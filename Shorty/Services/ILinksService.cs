@@ -10,6 +10,8 @@ namespace Shorty.Services
     {
         Task<Link> GetOrCreateLink(Uri uri);
 
+        Task<Link> CreateLink(Uri uri, string customId);
+
         Task<Link> GetLinkById(string id);
 
         Task<Link> GetLinkByUrl(string url);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Models;
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,26 @@ namespace Shorty.Services.Impl.LinksService
         public async Task<Link> IncrementLink(Link link)
         {
             link.Hits++;
+            await _dbContext.SaveChangesAsync();
+            return link;
+        }
+
+        public async Task<Link> CreateLink(Uri uri, string customId)
+        {
+            string normalizedUrl = _normalization.ConvertToString(uri);
+            string hash = GetHash(normalizedUrl);
+
+            if (await _dbContext.Links.Where(l => l.Id == customId).CountAsync() > 0)
+                throw new LinkAlreadyExistsException(customId);
+            
+            var link = new Link
+            {
+                Id = customId,
+                CreatedAt = DateTime.UtcNow,
+                Url = normalizedUrl,
+                UrlHash = hash
+            };
+            _dbContext.Add(link);
             await _dbContext.SaveChangesAsync();
             return link;
         }
