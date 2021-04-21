@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ApiError, getShortenedLink} from "../api";
+import {ApiError, getShortenedLink, getStats} from "../api";
 import "./Home.scss";
 
 const PLACEHOLDERS = [
@@ -15,11 +15,12 @@ const RANDOM_PLACEHOLDER = PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.
 export class Home extends Component {
     static displayName = Home.name;
     state = {
-      link: '',
-      loading: false,
-      errors: null,
-      showSidebar: false,
-      links: []
+        link: '',
+        loading: false,
+        errors: null,
+        showSidebar: false,
+        links: [],
+        stats: null
     }
     /**
      * @type React.RefObject<HTMLInputElement>
@@ -31,6 +32,8 @@ export class Home extends Component {
             const links = JSON.parse(localStorage['links'])
             this.setState({links})
         } catch (e) {}
+        
+        getStats().then(stats => this.setState({stats}))
     }
 
     saveLinks() {
@@ -101,6 +104,12 @@ export class Home extends Component {
               disabled={this.state.link.trim() === ''}
               className={"button is-primary" + (this.state.loading ? ' is-loading ' : '')}
               onClick={() => this.generate()}>Shortify</button>
+          
+          <div className="home__bottom">
+              {this.state.stats ? <div>
+                  {this.state.stats.totalCount} links shortened so far</div> : undefined}
+          </div>
+          
           
           <button className="home__open-sidebar"
             onClick={() => this.setState(() => this.setState({showSidebar: !this.state.showSidebar}))}>

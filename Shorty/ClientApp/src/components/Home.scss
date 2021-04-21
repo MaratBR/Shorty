@@ -78,6 +78,14 @@
             background: rgba(black, 0.4);
         }
     }
+    
+    &__bottom {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 40px;
+        font-size: .9em;
+    }
 }
 
 .sidebar {

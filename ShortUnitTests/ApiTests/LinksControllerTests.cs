@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Shorty.Controllers;
+using Shorty.Services;
 
 namespace ShortUnitTests.ApiTests
 {
@@ -134,7 +135,7 @@ namespace ShortUnitTests.ApiTests
 
             result = await Client.GetAsync("customId");
             Assert.AreEqual(HttpStatusCode.Redirect, result.StatusCode);
-            Assert.AreEqual("https://ya.ru/", result.Headers.Location);
+            Assert.AreEqual("https://ya.ru/", result.Headers.Location?.ToString());
         }
         
         [Test]
@@ -146,6 +147,39 @@ namespace ShortUnitTests.ApiTests
                 Link = "https://ya.ru"
             }));
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+        
+        [Test]
+        public async Task CheckLinksCounter()
+        {
+            var result = await Client.GetAsync("/stats");
+            result.EnsureSuccessStatusCode();
+
+            ILinksService.LinksStats stats = null;
+            
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                stats = JsonConvert.DeserializeObject<ILinksService.LinksStats>(await result.Content.ReadAsStringAsync());
+            });
+
+            result = await Client.PostAsync("/shorten", JsonContent.Create(new LinksController.ShortenLinkRequest
+            {
+                Link = $"https://example.ru/{Guid.NewGuid()}" 
+            }));
+            result.EnsureSuccessStatusCode();
+            
+            result = await Client.GetAsync("/stats");
+            ILinksService.LinksStats stats2 = null;
+            
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                stats2 = JsonConvert.DeserializeObject<ILinksService.LinksStats>(await result.Content.ReadAsStringAsync());
+            });
+            
+            Assert.AreEqual(stats.TotalCount + 1, stats2.TotalCount);
+            Assert.AreEqual(stats.CountToday + 1, stats2.CountToday);
+
+            
         }
     }
 }

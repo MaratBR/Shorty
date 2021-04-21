@@ -18,6 +18,15 @@ namespace Shorty.Services
 
         Task<Link> IncrementLink(Link link);
 
-        Task DeleteLink(string linkId); 
+        Task DeleteLink(string linkId);
+
+        Task<LinksStats> GetStats();
+
+        public class LinksStats
+        {
+            public long TotalCount { get; set; }
+            
+            public long CountToday { get; set; }
+        }
     }
 }

@@ -69,8 +69,9 @@ namespace Shorty.Controllers
             }
             catch (InvalidUrlException e)
             {
+                
                 var modelState = new ModelStateDictionary();
-                modelState.AddModelError("Link", e.Message);
+                modelState.AddModelError("Link", e.InnerException == null ? e.Message : e.InnerException.Message);
                 return BadRequest(modelState);
             }
             catch (UriFormatException e)
@@ -138,6 +139,12 @@ namespace Shorty.Controllers
             {
                 return NotFound($"Link {linkId} not found");
             }
+        }
+
+        [HttpGet("stats")]
+        public async Task<ActionResult<ILinksService.LinksStats>> GetStats()
+        {
+            return await _linksService.GetStats();
         }
     }
 }

@@ -115,7 +115,20 @@ namespace Shorty.Services.Impl.LinksService
                 await _dbContext.SaveChangesAsync();
             }
         }
-       
+
+        public async Task<ILinksService.LinksStats> GetStats()
+        {
+            var result = await Task.WhenAll(
+                _dbContext.Links.LongCountAsync(),
+                _dbContext.Links.Where(l => l.CreatedAt >= DateTime.UtcNow.Date).LongCountAsync()
+                );
+            return new ILinksService.LinksStats
+            {
+                TotalCount = result[0],
+                CountToday = result[1]
+            };
+        }
+
         #region static
 
         private static string GetHash(string s)
