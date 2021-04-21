@@ -18,7 +18,6 @@ export class Home extends Component {
         link: '',
         loading: false,
         errors: null,
-        showSidebar: false,
         links: [],
         stats: null
     }
@@ -81,14 +80,15 @@ export class Home extends Component {
     
     render () {
     return (
-      <div className="is-flex is-flex-direction-column is-align-items-center home">
-          <h1 className="app-title">Shorty</h1>
+      <div className="is-flex is-flex-direction-column is-align-items-start home">
+          <div className="home__top">
+              <h1 className="app-title">Shorty</h1>
+          </div>
           <div className="url-main">
-              {this.state.link.trim() !== '' ? <button
-                  onClick={() => this.inputRef.current.select() || document.execCommand("copy")}
-                  className="url-main__copy">
-                  <i className="fas fa-clone"/>
-              </button> : undefined}
+              <i 
+                  onClick={() => this.inputRef.current.focus()}
+                  className="fas fa-arrow-right url-main__prefix" />
+              
               <input
                   ref={this.inputRef}
                   disabled={this.state.loading}
@@ -98,41 +98,42 @@ export class Home extends Component {
                   className="url-main__input"
                   onChange={e => this.setState({link: e.target.value})}
                   type="text"/>
+
+              {this.state.link.trim() !== '' ? <button
+                  onClick={() => this.inputRef.current.select() || document.execCommand("copy")}
+                  className="url-main__copy">
+                  <i className="fas fa-clone"/>
+              </button> : undefined}
+
+              <button
+                  disabled={this.state.link.trim() === ''}
+                  className={"url-main__btn button is-text is-rounded" + (this.state.loading ? ' is-loading ' : '')}
+                  onClick={() => this.generate()}>Shortify</button>
           </div>
           {this.state.error ? this.renderErrors(this.state.error) : undefined}
-          <button
-              disabled={this.state.link.trim() === ''}
-              className={"button is-primary" + (this.state.loading ? ' is-loading ' : '')}
-              onClick={() => this.generate()}>Shortify</button>
+          
           
           <div className="home__bottom">
               {this.state.stats ? <div>
                   {this.state.stats.totalCount} links shortened so far</div> : undefined}
           </div>
           
-          
-          <button className="home__open-sidebar"
-            onClick={() => this.setState(() => this.setState({showSidebar: !this.state.showSidebar}))}>
-              <i className={'fas ' + (this.state.showSidebar ? 'fa-times' : 'fa-bars')}/>
-          </button>
-          {this.state.showSidebar && this.renderSideBar()}
+          {this.renderLinks()}
       </div>
     );
     }
     
-    renderSideBar() {
-      return <div className="home__sidebar-wrapper">
-          <div className="sidebar">
-              <button 
-                  onClick={() => this.clearHistory()}
-                  className="button is-text mb-2">Clear</button>
-              {this.state.links.map(info => <div className="sidebar-item" key={info.id}>
-                  <a className="sidebar-item__shorty" href={location.origin + '/' + info.id}>
-                      <span className="origin">{location.origin}/</span>{info.id}
-                  </a>
-                  <div className="sidebar-item__link">{info.addr}</div>
-              </div>)}
-          </div>
+    renderLinks() {
+      return <div className="links">
+          <button 
+              onClick={() => this.clearHistory()}
+              className="button is-text mb-2">Clear</button>
+          {this.state.links.map(info => <div className="sidebar-item" key={info.id}>
+              <a className="sidebar-item__shorty" href={location.origin + '/' + info.id}>
+                  <span className="origin">{location.origin}/</span>{info.id}
+              </a>
+              <div className="sidebar-item__link">{info.addr}</div>
+          </div>)}
       </div>
     }
     

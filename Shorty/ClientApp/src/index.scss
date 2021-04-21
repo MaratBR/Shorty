@@ -1,11 +1,28 @@
 /* Provide sufficient contrast against white background */
 
-$primary: #ffb10c;
+$primary: #78002B;
+$on-primary: white;
+$accent: white;
 $link: $primary;
 $border-hover: $primary;
 $border-light-hover: lighten($primary, 10%);
+$body-color: #eee;
+$background: #000;
+$background-dimmed: lighten($background, 10%);
+
+// card
+$card-color: $background-dimmed;
+
+// buttons
+$button-text-color: $body-color;
+$button-text-hover-color: darken($body-color, 9%);
+$button-text-hover-background-color: rgba($primary, 0.3);
 
 @import "~bulma";
+
+.button:hover {
+  transform: scale(1.05);
+}
 
 .app-title {
   font-family: 'Alfa Slab One', cursive;
@@ -19,12 +36,13 @@ code {
 
 html {
   overflow-y: hidden;
+  background-color: $background;
 }
 
 button.is-primary {
   transition: box-shadow .2s;
   &:hover {
-    box-shadow: 0 0 0 1px white, 0 0 0 3px #ffb10c;
+    box-shadow: 0 0 0 1px white, 0 0 0 3px $primary;
   }
 }
 
@@ -33,11 +51,11 @@ button.is-primary {
 }
 
 ::-webkit-scrollbar-track-piece{
-  background-color: #FFF;
+  background-color: black;
 }
 
 ::-webkit-scrollbar-thumb{
-  background-color: black;
+  background-color: white;
 }
 
 ::-webkit-scrollbar-thumb:hover{

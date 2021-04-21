@@ -1,13 +1,35 @@
 ﻿@import "../index";
 
 .url-main {
-    padding: 20px 0;
     position: relative;
+    background: linear-gradient($background * 0.8 + $primary * 0.2, $background);
+    color: $on-primary;    
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    align-items: center;
+    
+    $shortify-button-width: 100px;
+    $shortify-button-margin-right: 10px;
+    
+    &__prefix {
+        border-radius: 100px;
+        background: white;
+        color: black;
+        padding: 3px 4px;
+        margin-left: 40px;
+        margin-right: 5px;
+    }
+    
+    &__btn {
+        width: $shortify-button-width;
+        margin-right: $shortify-button-margin-right;
+    }
     
     &__copy {
         all: unset;
         position: absolute;
-        right: 20px;
+        right: $shortify-button-width + $shortify-button-margin-right;
         top: 50%;
         transform: translateY(-50%);
         padding: 10px;
@@ -29,32 +51,32 @@
             opacity: 0;
         }
 
-        border-radius: 10px;
+        color: inherit;
+        background: none;
+        border-radius: 0;
         font-size: 1.3em;
-        text-align: center;
-        background: $scheme-main-ter;
-        padding: 15px;
+        text-align: left;
+        padding: 15px 15px 15px 5px;
         border: 2px solid transparent;
         transition: .2s;
-
-        width: 100vw;
-
-
-        @media screen and (min-width: 500px) {
-            width: 95vw;
-        }
+        flex-grow: 1;
 
 
         &:focus {
             outline: none;
-            border-color: $primary;
+            border-color: $accent;
         }
     }
 }
 
 .home {
     height: 100vh;
-    justify-content: center;
+    
+    &__top {
+        padding: 50px 0 30px 45px;
+        width: 100%;
+        background: linear-gradient($background * 0.1 + $primary * 0.9 , $background * 0.8 + $primary * 0.2);
+    }
     
     &__open-sidebar {
         border: none;
@@ -67,7 +89,6 @@
         right: 0;
         z-index: 20;
     }
-    
     
     &__sidebar-wrapper {
         position: absolute;
@@ -88,25 +109,14 @@
     }
 }
 
-.sidebar {
-    padding: 90px 10px 0 15px;
-    position: absolute;
-    right: 0;
-    height: 100%;
-    min-width: 100%;
-    background: #f2f2f2;
-    box-shadow: 0 0 30px #555;
-    overflow-y: auto;
-
-    @media screen and (min-width: 500px) {
-        min-width: 45%;
-    }
+.links {
+    padding: 15px;
+    width: 100%;
 }
 
 .sidebar-item {
-    background: white;
+    background: $card-color;
     border-radius: 10px;
-    box-shadow: 0 11px 10px -2px #ddd;
     padding: 10px;
     margin-bottom: 15px;
     
