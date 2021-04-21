@@ -69,7 +69,7 @@ namespace Shorty.Controllers
             }
             catch (InvalidUrlException e)
             {
-                
+
                 var modelState = new ModelStateDictionary();
                 modelState.AddModelError("Link", e.InnerException == null ? e.Message : e.InnerException.Message);
                 return BadRequest(modelState);
@@ -85,6 +85,12 @@ namespace Shorty.Controllers
                 var modelState = new ModelStateDictionary();
                 modelState.AddModelError("CustomId", e.Message);
                 return BadRequest(modelState);
+            }
+            catch (LinkAlreadyExistsException e)
+            {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("CustomId", e.Message);
+                return Conflict(modelState);
             }
             
             return new ShortenedLink

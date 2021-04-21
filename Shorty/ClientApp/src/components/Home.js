@@ -19,7 +19,9 @@ export class Home extends Component {
         loading: false,
         errors: null,
         links: [],
-        stats: null
+        stats: null,
+        aliased: false,
+        alias: ''
     }
     /**
      * @type React.RefObject<HTMLInputElement>
@@ -50,7 +52,7 @@ export class Home extends Component {
     try {
         const link = this.state.link.trim();
         this.setState({link})
-        const info = await getShortenedLink(link);
+        const info = await getShortenedLink(link, this.state.aliased ? this.state.alias : undefined);
         
         const links = [...this.state.links]
         links.unshift({
@@ -79,48 +81,65 @@ export class Home extends Component {
     }
     
     render () {
-    return (
-      <div className="is-flex is-flex-direction-column is-align-items-start home">
-          <div className="home__top">
-              <h1 className="app-title">Shorty</h1>
-          </div>
-          <div className="url-main">
-              <i 
-                  onClick={() => this.inputRef.current.focus()}
-                  className="fas fa-arrow-right url-main__prefix" />
+        const hasLink = this.state.link.trim() !== '' && (!this.state.aliased || this.state.aliased !== '')
+        return (
+          <div className="is-flex is-flex-direction-column is-align-items-start home">
+              <div className="home__top">
+                  <h1 className="app-title">Shorty</h1>
+              </div>
+              <section className="url-main">
+                  <div className="url-main__type">
+                      <button 
+                          onClick={() => this.setState({aliased: false})}
+                          className={'button tag' + (!this.state.aliased ? ' is-primary' : '')}>Normal</button>
+                      <button
+                          onClick={() => this.setState({aliased: true})}
+                          className={'button tag' + (this.state.aliased ? ' is-primary' : '')}>Aliased</button>
+                  </div>
+                  <div className="url-main__shortener">
+                      <i onClick={() => this.inputRef.current.focus()} className="fas fa-arrow-right url-main__prefix" />
+    
+                      <input
+                          ref={this.inputRef}
+                          disabled={this.state.loading}
+                          onFocus={e => e.target.select()}
+                          value={this.state.link}
+                          placeholder={RANDOM_PLACEHOLDER}
+                          className="url-main__input"
+                          onChange={e => this.setState({link: e.target.value})}
+                          type="text"/>
+    
+                      {this.state.aliased ? <input
+                          disabled={this.state.loading}
+                          value={this.state.alias}
+                          placeholder="Alias"
+                          className="url-main__alias"
+                          onChange={e => this.setState({alias: e.target.value})}
+                          type="text"/> : undefined}
+    
+                      {hasLink ? <button
+                          onClick={() => this.inputRef.current.select() || document.execCommand("copy")}
+                          className="url-main__copy">
+                          <i className="fas fa-clone"/>
+                      </button> : undefined}
+    
+                      <button
+                          disabled={!hasLink}
+                          className={"url-main__btn button is-text is-rounded" + (this.state.loading ? ' is-loading ' : '')}
+                          onClick={() => this.generate()}>Shortify</button>
+                  </div>
+              </section>
+              {this.state.error ? this.renderErrors(this.state.error) : undefined}
               
-              <input
-                  ref={this.inputRef}
-                  disabled={this.state.loading}
-                  onFocus={e => e.target.select()}
-                  value={this.state.link}
-                  placeholder={RANDOM_PLACEHOLDER}
-                  className="url-main__input"
-                  onChange={e => this.setState({link: e.target.value})}
-                  type="text"/>
-
-              {this.state.link.trim() !== '' ? <button
-                  onClick={() => this.inputRef.current.select() || document.execCommand("copy")}
-                  className="url-main__copy">
-                  <i className="fas fa-clone"/>
-              </button> : undefined}
-
-              <button
-                  disabled={this.state.link.trim() === ''}
-                  className={"url-main__btn button is-text is-rounded" + (this.state.loading ? ' is-loading ' : '')}
-                  onClick={() => this.generate()}>Shortify</button>
+              
+              <div className="home__bottom">
+                  {this.state.stats ? <div>
+                      {this.state.stats.totalCount} links shortened so far</div> : undefined}
+              </div>
+              
+              {this.renderLinks()}
           </div>
-          {this.state.error ? this.renderErrors(this.state.error) : undefined}
-          
-          
-          <div className="home__bottom">
-              {this.state.stats ? <div>
-                  {this.state.stats.totalCount} links shortened so far</div> : undefined}
-          </div>
-          
-          {this.renderLinks()}
-      </div>
-    );
+        );
     }
     
     renderLinks() {

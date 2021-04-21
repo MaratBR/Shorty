@@ -16,11 +16,11 @@ async function _fetch(input, init) {
     throw new ApiError(body)
 }
 
-export async function getShortenedLink(link) {
+export async function getShortenedLink(link, customId) {
     return await _fetch('/shorten', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({link})
+        body: JSON.stringify({link, customId})
     })
 }
 

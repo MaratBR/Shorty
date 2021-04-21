@@ -3,11 +3,23 @@
 .url-main {
     position: relative;
     background: linear-gradient($background * 0.8 + $primary * 0.2, $background);
-    color: $on-primary;    
-    display: flex;
-    flex-direction: row;
+    color: $on-primary;   
+    padding-left: 40px;
     width: 100vw;
-    align-items: center;
+    
+    &__type {
+        .tag {
+            margin-right: 5px;
+            border: none;
+        }
+        padding-bottom: 10px;
+    }
+    
+    &__shortener {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
     
     $shortify-button-width: 100px;
     $shortify-button-margin-right: 10px;
@@ -17,7 +29,6 @@
         background: white;
         color: black;
         padding: 3px 4px;
-        margin-left: 40px;
         margin-right: 5px;
     }
     
@@ -46,26 +57,30 @@
         }
     }
 
-    &__input {
+    &__input, &__alias {
         &:focus::placeholder {
             opacity: 0;
         }
-
+    
         color: inherit;
         background: none;
         border-radius: 0;
         font-size: 1.3em;
         text-align: left;
         padding: 15px 15px 15px 5px;
-        border: 2px solid transparent;
+        border: none;
+        border-bottom: 1px solid $body-color;
         transition: .2s;
-        flex-grow: 1;
+        flex-grow: 5;
 
 
         &:focus {
-            outline: none;
-            border-color: $accent;
+            outline: 2px solid $accent;
         }
+    }
+    
+    &__alias {
+        flex-grow: 1;
     }
 }
 
