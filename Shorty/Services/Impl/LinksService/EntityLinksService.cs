@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SQLitePCL;
 
@@ -55,8 +56,12 @@ namespace Shorty.Services.Impl.LinksService
             return link;
         }
 
+        private static readonly Regex CustomIdRegex = new Regex(@"^[a-zA-Z0-9-_@$]{2,}$");
+
         public async Task<Link> CreateLink(Uri uri, string customId)
         {
+            if (!CustomIdRegex.IsMatch(customId))
+                throw new InvalidIdException(customId, "does not match the pattern [a-zA-Z0-9]{2,}");
             string normalizedUrl = _normalization.ConvertToString(uri);
             string hash = GetHash(normalizedUrl);
 

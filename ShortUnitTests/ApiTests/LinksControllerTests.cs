@@ -121,5 +121,31 @@ namespace ShortUnitTests.ApiTests
             Assert.NotNull(response);
             Assert.AreEqual(1, response2.Hits);
         }
+
+        [Test]
+        public async Task CreateLinkWithCustomId()
+        {
+            var result = await Client.PostAsync("/shorten", JsonContent.Create(new LinksController.ShortenLinkRequest
+            {
+                CustomId = "customId",
+                Link = "https://ya.ru"
+            }));
+            result.EnsureSuccessStatusCode();
+
+            result = await Client.GetAsync("customId");
+            Assert.AreEqual(HttpStatusCode.Redirect, result.StatusCode);
+            Assert.AreEqual("https://ya.ru/", result.Headers.Location);
+        }
+        
+        [Test]
+        public async Task CreateLinkWithInvalidCustomId()
+        {
+            var result = await Client.PostAsync("/shorten", JsonContent.Create(new LinksController.ShortenLinkRequest
+            {
+                CustomId = "#InvalidCustomId",
+                Link = "https://ya.ru"
+            }));
+            Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+        }
     }
 }

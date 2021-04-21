@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Shorty;
 using Shorty.Models;
 using Shorty.Services;
 using Shorty.Services.Impl.LinkIdGeneratorService;
@@ -88,6 +89,25 @@ namespace ShortUnitTests.Unit
             {
                 await _linksService.GetLinkById(newLink.Id);
             });
+        }
+
+
+        private static string[] ValidCustomIds = new[] { "ValidId", "honey", "minecraft", "ya", "kthxbye", "45$", "@user", "__underscore", "--help" };
+        
+        private string[] InvalidCustomIds = { "1", "a", "Z", "Hi!", "Hello world", string.Empty, "&something", "#hashtag", "100%", "5*", "re:store" };
+
+        [Test]
+        public void CreateLinkWithCustomId()
+        {
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                foreach (var id in ValidCustomIds)
+                    await _linksService.CreateLink(new Uri("https://example.com"), id);
+            });
+
+            foreach (var id in InvalidCustomIds)
+                Assert.ThrowsAsync<InvalidIdException>(async () =>
+                    await _linksService.CreateLink(new Uri("https://example.com"), id));
         }
     }
 }

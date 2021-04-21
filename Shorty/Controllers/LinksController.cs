@@ -37,6 +37,9 @@ namespace Shorty.Controllers
         {
             [Required]
             public string Link { get; set; }
+            
+            
+            public string CustomId { get; set; }
         }
 
         [HttpPost("shorten")]
@@ -55,7 +58,14 @@ namespace Shorty.Controllers
                     return BadRequest(modelState);
                 }
 
-                link = await _linksService.GetOrCreateLink(uri);
+                if (request.CustomId == null)
+                {
+                    link = await _linksService.GetOrCreateLink(uri);
+                }
+                else
+                {
+                    link = await _linksService.CreateLink(uri, request.CustomId);
+                }
             }
             catch (InvalidUrlException e)
             {
@@ -67,6 +77,12 @@ namespace Shorty.Controllers
             {
                 var modelState = new ModelStateDictionary();
                 modelState.AddModelError("Link", e.Message);
+                return BadRequest(modelState);
+            }
+            catch (InvalidIdException e)
+            {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("CustomId", e.Message);
                 return BadRequest(modelState);
             }
             
