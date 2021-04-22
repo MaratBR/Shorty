@@ -150,6 +150,24 @@ namespace ShortUnitTests.ApiTests
         }
         
         [Test]
+        public async Task CreateLinkThatAlreadyExists()
+        {
+            var id = $"CustomId{new Random().Next()}";
+            var result = await Client.PostAsync("/shorten", JsonContent.Create(new LinksController.ShortenLinkRequest
+            {
+                CustomId = id,
+                Link = "https://ya.ru"
+            }));
+            result.EnsureSuccessStatusCode();
+            result = await Client.PostAsync("/shorten", JsonContent.Create(new LinksController.ShortenLinkRequest
+            {
+                CustomId = id,
+                Link = "https://ya.ru"
+            }));
+            Assert.AreEqual(HttpStatusCode.Conflict, result.StatusCode);
+        }
+        
+        [Test]
         public async Task CheckLinksCounter()
         {
             var result = await Client.GetAsync("/stats");
