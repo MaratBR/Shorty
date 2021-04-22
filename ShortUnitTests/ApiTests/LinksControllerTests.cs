@@ -9,7 +9,7 @@ using Shorty.Services;
 
 namespace ShortUnitTests.ApiTests
 {
-    public class LinksControllerTests : ApiTestsBase
+    public class LinksControllerTests : TestServerTestsBase
     {
         [Test]
         public async Task RedirectNotFound()

@@ -61,7 +61,7 @@ export class Home extends Component {
         })
         
         this.setState({
-            link: location.origin + '/' + info.id,
+            link: window.location.origin + '/' + info.id,
             loading: false,
             error: null,
             links
@@ -148,8 +148,8 @@ export class Home extends Component {
               onClick={() => this.clearHistory()}
               className="button is-text mb-2">Clear</button>
           {this.state.links.map(info => <div className="sidebar-item" key={info.id}>
-              <a className="sidebar-item__shorty" href={location.origin + '/' + info.id}>
-                  <span className="origin">{location.origin}/</span>{info.id}
+              <a className="sidebar-item__shorty" href={window.location.origin + '/' + info.id}>
+                  <span className="origin">{window.location.origin}/</span>{info.id}
               </a>
               <div className="sidebar-item__link">{info.addr}</div>
           </div>)}
