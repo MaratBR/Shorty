@@ -81,7 +81,7 @@ export class Home extends Component {
     }
     
     render () {
-        const hasLink = this.state.link.trim() !== '' && (!this.state.aliased || this.state.aliased !== '')
+        const hasLink = this.state.link.trim() !== '' && (!this.state.aliased || this.state.alias.trim() !== '')
         return (
           <div className="is-flex is-flex-direction-column is-align-items-start home">
               <div className="home__top">
@@ -133,8 +133,7 @@ export class Home extends Component {
               
               
               <div className="home__bottom">
-                  {this.state.stats ? <div>
-                      {this.state.stats.totalCount} links shortened so far</div> : undefined}
+                  {this.state.stats ? `${this.state.stats.totalCount} links shortened so far` : ''}
               </div>
               
               {this.renderLinks()}
@@ -157,21 +156,35 @@ export class Home extends Component {
     }
     
     renderErrors(errors) {
-      const items = [];
-      
-      let index = 0;
-      for (let field in errors) {
-          for (let err of errors[field]) {
-              items.push(
-                  <div className="error" key={index}>
-                      <span className="error__field">{field}</span>
-                      <span className="error__body">{err}</span>
-                  </div>
-              );
-              index++;
-          }
-      }
-      
-      return <div className="errors">{items}</div>
+        const items = [];
+        
+        if (typeof errors === 'string') {
+            items.push(<div className="error" >
+                <span className="error__body">{errors}</span>
+            </div>)
+        } else if (errors instanceof Array) {
+            for (let i = 0; i < errors.length; i++) {
+                items.push(
+                    <div className="error" key={i}>
+                        <span className="error__body">{errors[i]}</span>
+                    </div>
+                );
+            }
+        } else {
+            let index = 0;
+            for (let field in errors) {
+                for (let err of errors[field]) {
+                    items.push(
+                        <div className="error" key={index}>
+                            <span className="error__field">{field}</span>
+                            <span className="error__body">{err}</span>
+                        </div>
+                    );
+                    index++;
+                }
+            }
+        }
+        
+        return <div className="errors">{items}</div>
     }
 }

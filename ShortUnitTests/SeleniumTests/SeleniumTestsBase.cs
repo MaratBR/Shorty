@@ -35,7 +35,7 @@ namespace ShortUnitTests.SeleniumTests
             });
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void DisposeSelenium()
         {
             Chrome?.Quit();
@@ -43,7 +43,7 @@ namespace ShortUnitTests.SeleniumTests
             Chrome = null;
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void StopServer()
         {
             _process.Kill();

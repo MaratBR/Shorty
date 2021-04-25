@@ -13,7 +13,6 @@ namespace ShortUnitTests.ApiTests
     {
         protected readonly TestServer Server;
         protected readonly HttpClient Client;
-        protected readonly string RootUri;
 
         public TestServerTestsBase()
         {
@@ -28,7 +27,6 @@ namespace ShortUnitTests.ApiTests
                     })                
                 .UseStartup<Startup>());
             Server.Host.Start();
-            RootUri = Server.Host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
             Client = Server.CreateClient();
         }
     }
